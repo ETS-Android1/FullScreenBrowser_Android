@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  tools:context="com.xSavior_of_God.fullscreenbrowser.FullscreenActivity">
+
+  <RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="200dp"
+    android:padding="10dp">
+
+    <TextView
+      android:id="@+id/heading"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:text="Impostazioni"
+      android:textColor="#000"
+      android:textSize="18sp" />
+
+    <EditText
+      android:id="@+id/inputUrl"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_below="@id/heading"
+      android:layout_marginLeft="50dp"
+      android:layout_marginTop="20dp"
+      android:background="@null"
+      android:hint="..."
+      android:inputType="textUri"
+      android:textColor="#000" />
+
+    <TextView
+      android:id="@+id/txt1"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_below="@id/heading"
+      android:layout_marginLeft="10dp"
+      android:layout_marginTop="20dp"
+      android:background="@null"
+      android:text="URL:"
+      android:textColor="#000" />
+
+    <TextView
+      android:id="@+id/txt2"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_below="@id/heading"
+      android:layout_marginLeft="10dp"
+      android:layout_marginTop="60dp"
+      android:background="@null"
+      android:text="REFRESH (sec.):"
+      android:textColor="#000" />
+
+    <EditText
+      android:id="@+id/inputRefresh"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_below="@id/heading"
+      android:layout_marginLeft="120dp"
+      android:layout_marginTop="60dp"
+      android:background="@null"
+      android:hint="..."
+      android:inputType="number"
+      android:textColor="#000" />
+
+    <Button
+      android:id="@+id/action_ok"
+      style="@style/Widget.AppCompat.Button"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_alignParentRight="true"
+      android:layout_alignParentBottom="true"
+      android:layout_marginRight="20dp"
+      android:background="#D50000"
+      android:text="SALVA"
+      android:textColor="@color/white"
+      android:textSize="18sp" />
+
+    <Button
+      android:id="@+id/action_cancel"
+      style="@style/Widget.AppCompat.Button"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_alignParentLeft="true"
+      android:layout_alignParentBottom="true"
+      android:layout_marginRight="20dp"
+      android:background="#00C853"
+      android:text="CHIUDI"
+      android:textColor="@color/white"
+      android:textSize="18sp" />
+
+  </RelativeLayout>
+
+
+</RelativeLayout>
