@@ -112,7 +112,7 @@ public class FullscreenActivity extends AppCompatActivity implements View.OnTouc
         webSettings.setJavaScriptEnabled(true);
         String url = mPrefs.getString("url", "http://10.4.1.9/televisori/");
         this.refreshUrl(url);
-        this.refresh = mPrefs.getInt("refresh",1000 * 60 * 60 * 12);
+        this.refresh = mPrefs.getInt("refresh",60 * 60 * 12);
 
         binding.dummyButton.setOnTouchListener(mDelayHideTouchListener);
     }
@@ -213,7 +213,7 @@ public class FullscreenActivity extends AppCompatActivity implements View.OnTouc
             }
         };
 
-        t.schedule(mTimerTask, 500, refresh);
+        t.schedule(mTimerTask, 500, refresh*1000);
 
     }
 

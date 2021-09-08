@@ -37,7 +37,7 @@ public class settingsDialog extends DialogFragment {
       @Override
       public void onClick(View v) {
         String link = url.getText().toString();
-        int ref = 10000;
+        int ref = 1;
         try {
           ref = Math.max(Integer.parseInt(refresh.getText().toString()), ref);
         } catch (Exception ex) {
