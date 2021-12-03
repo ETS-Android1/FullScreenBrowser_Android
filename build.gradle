@@ -1,3 +1,6 @@
+ext {
+    compileSdkVersion = 30
+}
 buildscript {
     repositories {
         google()

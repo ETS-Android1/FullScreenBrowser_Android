@@ -14,6 +14,12 @@ public class settingsDialog extends DialogFragment {
   public EditText url, refresh;
   private TextView mActionOk, mActionCancel;
 
+  @Override
+  public void onDestroy() {
+    FullscreenActivity.instance.viewOpen = false;
+    super.onDestroy();
+  }
+
   @Nullable
   @Override
   public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {

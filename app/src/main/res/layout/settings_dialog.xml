@@ -14,7 +14,7 @@
       android:id="@+id/heading"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:text="Impostazioni"
+      android:text="Settings"
       android:textColor="#000"
       android:textSize="18sp" />
 
@@ -25,7 +25,7 @@
       android:layout_below="@id/heading"
       android:layout_marginLeft="50dp"
       android:layout_marginTop="20dp"
-      android:background="@null"
+      android:drawable="@null"
       android:hint="..."
       android:inputType="textUri"
       android:textColor="#000" />
@@ -36,8 +36,8 @@
       android:layout_height="wrap_content"
       android:layout_below="@id/heading"
       android:layout_marginLeft="10dp"
-      android:layout_marginTop="20dp"
-      android:background="@null"
+      android:layout_marginTop="34dp"
+      android:drawable="@null"
       android:text="URL:"
       android:textColor="#000" />
 
@@ -47,8 +47,8 @@
       android:layout_height="wrap_content"
       android:layout_below="@id/heading"
       android:layout_marginLeft="10dp"
-      android:layout_marginTop="60dp"
-      android:background="@null"
+      android:layout_marginTop="73dp"
+      android:drawable="@null"
       android:text="REFRESH (sec.):"
       android:textColor="#000" />
 
@@ -59,7 +59,7 @@
       android:layout_below="@id/heading"
       android:layout_marginLeft="120dp"
       android:layout_marginTop="60dp"
-      android:background="@null"
+      android:drawable="@null"
       android:hint="..."
       android:inputType="number"
       android:textColor="#000" />
@@ -72,8 +72,7 @@
       android:layout_alignParentRight="true"
       android:layout_alignParentBottom="true"
       android:layout_marginRight="20dp"
-      android:background="#D50000"
-      android:text="SALVA"
+      android:text="SAVE"
       android:textColor="@color/white"
       android:textSize="18sp" />
 
@@ -85,8 +84,7 @@
       android:layout_alignParentLeft="true"
       android:layout_alignParentBottom="true"
       android:layout_marginRight="20dp"
-      android:background="#00C853"
-      android:text="CHIUDI"
+      android:text="CLOSE"
       android:textColor="@color/white"
       android:textSize="18sp" />
 
