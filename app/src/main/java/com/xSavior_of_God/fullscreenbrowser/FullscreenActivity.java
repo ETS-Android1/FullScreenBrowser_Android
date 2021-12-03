@@ -102,6 +102,7 @@ public class FullscreenActivity extends AppCompatActivity implements View.OnTouc
 
   @Override
   public void onDestroy() {
+    Toast.makeText(getApplicationContext(), "Morto!", Toast.LENGTH_LONG).show();
     super.onDestroy();
     this.stopTask();
     networkStateReceiver.removeListener(this);

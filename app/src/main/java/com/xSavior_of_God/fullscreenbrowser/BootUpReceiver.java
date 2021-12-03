@@ -17,7 +17,7 @@ public class BootUpReceiver extends BroadcastReceiver {
       Toast.makeText(context, "arg1.getAction().equals(Intent.ACTION_BOOT_COMPLETED)", Toast.LENGTH_LONG).show();
 
     }
-    Intent intent = new Intent(context,FullscreenActivity.class);
+    Intent intent = new Intent(context, FullscreenActivity.class);
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
       intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
       context.startForegroundService(intent);
