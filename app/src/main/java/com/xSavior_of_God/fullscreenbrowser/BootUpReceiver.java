@@ -13,21 +13,16 @@ public class BootUpReceiver extends BroadcastReceiver {
   @Override
   public void onReceive(Context context, Intent arg1) {
     Toast.makeText(context, "STARTING...", Toast.LENGTH_LONG).show();
-    if (arg1.getAction().equals(Intent.ACTION_BOOT_COMPLETED)) {
-      Toast.makeText(context, "arg1.getAction().equals(Intent.ACTION_BOOT_COMPLETED)", Toast.LENGTH_LONG).show();
-
+    try {
+      // monkey -p com.xSavior_of_God.fullscreenbrowser -c android.intent.category.LAUNCHER 1
+      // am start -n com.xSavior_of_God.fullscreenbrowser/com.xSavior_of_God.fullscreenbrowser.FullscreenActivity
+      //Runtime.getRuntime().exec(new String[] {"su", "am start com.xSavior_of_God.fullscreenbrowser/.FullscreenActivity"});
+      Intent launchIntent = context.getPackageManager().getLaunchIntentForPackage("com.android.tv.settings");
+      launchIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+      context.startActivity(launchIntent);
+    } catch (Exception e) {
+      e.printStackTrace();
     }
-    Intent intent = new Intent(context, FullscreenActivity.class);
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-      intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-      context.startForegroundService(intent);
-      Toast.makeText(context, "TRUE!", Toast.LENGTH_LONG).show();
-    } else {
-      context.startService(intent);
-      Toast.makeText(context, "FALSE!", Toast.LENGTH_LONG).show();
-    }
-
-
     Toast.makeText(context, "START DONE!", Toast.LENGTH_LONG).show();
   }
 

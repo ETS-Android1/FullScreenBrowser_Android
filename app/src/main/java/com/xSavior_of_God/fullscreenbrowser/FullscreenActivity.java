@@ -64,8 +64,6 @@ public class FullscreenActivity extends AppCompatActivity implements View.OnTouc
   protected void onCreate(Bundle savedInstanceState) {
     Toast.makeText(getApplicationContext(), "Hi!", Toast.LENGTH_LONG).show();
     super.onCreate(savedInstanceState);
-
-
     instance = this;
     mPrefs = getSharedPreferences("label", 0);
 
@@ -85,6 +83,7 @@ public class FullscreenActivity extends AppCompatActivity implements View.OnTouc
     client = new WebViewClient() {
       @Override
       public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
+        FullscreenActivity.instance.reboot();
         //Your code to do
       }
     };
@@ -260,14 +259,6 @@ public class FullscreenActivity extends AppCompatActivity implements View.OnTouc
 
   public void reboot() {
     try {
-      Toast.makeText(this, "Restarting...", Toast.LENGTH_LONG).show();
-      Toast.makeText(this, "Restarting..", Toast.LENGTH_LONG).show();
-      Toast.makeText(this, "Restarting...", Toast.LENGTH_LONG).show();
-      Toast.makeText(this, "Restarting..", Toast.LENGTH_LONG).show();
-      Toast.makeText(this, "Restarting...", Toast.LENGTH_LONG).show();
-      Toast.makeText(this, "Restarting..", Toast.LENGTH_LONG).show();
-      Toast.makeText(this, "Restarting...", Toast.LENGTH_LONG).show();
-      Toast.makeText(this, "Restarting..", Toast.LENGTH_LONG).show();
       Toast.makeText(this, "Restarting...", Toast.LENGTH_LONG).show();
       Runtime.getRuntime().exec("reboot");
     } catch (IOException e) {
