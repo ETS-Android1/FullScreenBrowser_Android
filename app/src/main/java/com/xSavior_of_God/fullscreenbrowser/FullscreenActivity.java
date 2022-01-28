@@ -5,8 +5,13 @@ import android.annotation.SuppressLint;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.net.DhcpInfo;
+import android.net.NetworkInfo;
+import android.net.wifi.WifiInfo;
+import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -19,11 +24,16 @@ import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.xSavior_of_God.fullscreenbrowser.databinding.ActivityFullscreenBinding;
 
 import java.io.IOException;
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
+import java.util.Enumeration;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -62,7 +72,22 @@ public class FullscreenActivity extends AppCompatActivity implements View.OnTouc
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
-    Toast.makeText(getApplicationContext(), "Hi!", Toast.LENGTH_LONG).show();
+    String ipAddress = null;
+    try {
+      for (Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces(); en.hasMoreElements(); ) {
+        NetworkInterface intf = en.nextElement();
+        for (Enumeration<InetAddress> enumIpAddr = intf.getInetAddresses(); enumIpAddr.hasMoreElements(); ) {
+          InetAddress inetAddress = enumIpAddr.nextElement();
+          if (!inetAddress.isLoopbackAddress()) {
+            ipAddress = inetAddress.getHostAddress().toString();
+          }
+        }
+      }
+    } catch (SocketException ex) {  }
+
+    String display = "Network Info\n" + "IP: " + ipAddress;
+    Toast.makeText(getApplicationContext(), display, Toast.LENGTH_LONG).show();
+
     super.onCreate(savedInstanceState);
     instance = this;
     mPrefs = getSharedPreferences("label", 0);
