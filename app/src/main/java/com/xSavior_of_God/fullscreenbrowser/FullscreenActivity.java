@@ -5,13 +5,8 @@ import android.annotation.SuppressLint;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.Context;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.net.DhcpInfo;
-import android.net.NetworkInfo;
-import android.net.wifi.WifiInfo;
-import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -24,12 +19,10 @@ import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.xSavior_of_God.fullscreenbrowser.databinding.ActivityFullscreenBinding;
 
-import java.io.IOException;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
@@ -83,11 +76,10 @@ public class FullscreenActivity extends AppCompatActivity implements View.OnTouc
           }
         }
       }
-    } catch (SocketException ex) {  }
+    } catch (SocketException ex) {}
 
     String display = "Network Info\n" + "IP: " + ipAddress;
     Toast.makeText(getApplicationContext(), display, Toast.LENGTH_LONG).show();
-
     super.onCreate(savedInstanceState);
     instance = this;
     mPrefs = getSharedPreferences("label", 0);
@@ -109,7 +101,6 @@ public class FullscreenActivity extends AppCompatActivity implements View.OnTouc
       @Override
       public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
         FullscreenActivity.instance.reboot();
-        //Your code to do
       }
     };
     webView.setWebViewClient(client);
@@ -200,7 +191,6 @@ public class FullscreenActivity extends AppCompatActivity implements View.OnTouc
     }
     mControlsView.setVisibility(View.GONE);
     mVisible = false;
-
     mHideHandler.removeCallbacks(mShowPart2Runnable);
     mHideHandler.postDelayed(mHidePart2Runnable, UI_ANIMATION_DELAY);
   }
@@ -254,9 +244,7 @@ public class FullscreenActivity extends AppCompatActivity implements View.OnTouc
         });
       }
     };
-
     t.schedule(mTimerTask, 500, refresh * 1000);
-
   }
 
   public void stopTask() {
@@ -286,7 +274,7 @@ public class FullscreenActivity extends AppCompatActivity implements View.OnTouc
     try {
       Toast.makeText(this, "Restarting...", Toast.LENGTH_LONG).show();
       Runtime.getRuntime().exec("reboot");
-    } catch (IOException e) {
+    } catch (Exception e) {
       e.printStackTrace();
     }
   }

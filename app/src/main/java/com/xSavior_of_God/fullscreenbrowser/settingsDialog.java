@@ -51,6 +51,7 @@ public class settingsDialog extends DialogFragment {
         }
         FullscreenActivity.instance.refreshUrl(url.getText().toString());
         FullscreenActivity.instance.updateRefresh(ref);
+        getDialog().dismiss();
       }
     });
 
