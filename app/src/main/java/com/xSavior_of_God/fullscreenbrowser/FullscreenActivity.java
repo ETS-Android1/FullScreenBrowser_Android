@@ -76,7 +76,8 @@ public class FullscreenActivity extends AppCompatActivity implements View.OnTouc
           }
         }
       }
-    } catch (SocketException ex) {}
+    } catch (SocketException ex) {
+    }
 
     String display = "Network Info\n" + "IP: " + ipAddress;
     Toast.makeText(getApplicationContext(), display, Toast.LENGTH_LONG).show();
@@ -100,6 +101,7 @@ public class FullscreenActivity extends AppCompatActivity implements View.OnTouc
     client = new WebViewClient() {
       @Override
       public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
+        Toast.makeText(FullscreenActivity.instance, "ERROR " + error.getErrorCode() + " - " + error.getDescription(), Toast.LENGTH_LONG).show();
         FullscreenActivity.instance.reboot();
       }
     };
@@ -109,7 +111,7 @@ public class FullscreenActivity extends AppCompatActivity implements View.OnTouc
     webSettings.setJavaScriptCanOpenWindowsAutomatically(true);
     webSettings.setSafeBrowsingEnabled(false);
     webSettings.setJavaScriptEnabled(true);
-    String url = mPrefs.getString("url", "http://10.4.1.9/televisori/");
+    String url = mPrefs.getString("url", "http://10.4.1.9/televisori/@17");
     this.refreshUrl(url);
     this.refresh = mPrefs.getInt("refresh", 60 * 60 * 12);
     binding.settingsButton.setOnTouchListener(mDelayHideTouchListener);
@@ -227,6 +229,7 @@ public class FullscreenActivity extends AppCompatActivity implements View.OnTouc
 
   @Override
   public void networkUnavailable() {
+    Toast.makeText(this, "Network not avalible...", Toast.LENGTH_LONG).show();
     this.reboot();
   }
 
