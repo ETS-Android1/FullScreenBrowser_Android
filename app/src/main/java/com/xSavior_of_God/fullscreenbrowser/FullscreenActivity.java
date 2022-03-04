@@ -5,8 +5,10 @@ import android.annotation.SuppressLint;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -23,6 +25,7 @@ import android.widget.Toast;
 
 import com.xSavior_of_God.fullscreenbrowser.databinding.ActivityFullscreenBinding;
 
+import java.lang.Thread.UncaughtExceptionHandler;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
@@ -47,6 +50,7 @@ public class FullscreenActivity extends AppCompatActivity implements View.OnTouc
   private TimerTask mTimerTask;
   private Timer t = new Timer();
   public boolean viewOpen = false;
+  public boolean restartActivity = true;
 
   /*
   Qui chiamo l'evento che innesca l'apertura delle impostazioni.
@@ -83,6 +87,16 @@ public class FullscreenActivity extends AppCompatActivity implements View.OnTouc
     Toast.makeText(getApplicationContext(), display, Toast.LENGTH_LONG).show();
     super.onCreate(savedInstanceState);
     instance = this;
+    Thread.setDefaultUncaughtExceptionHandler(new UncaughtExceptionHandler() {
+
+      @Override
+      public void uncaughtException(Thread t, Throwable e) {
+        System.out.println("CRASHED!!!");
+        reboot();
+        System.out.println("CRASHED!!!");
+      }
+    });
+
     mPrefs = getSharedPreferences("label", 0);
 
     networkStateReceiver = new NetworkStateReceiver();
@@ -96,13 +110,52 @@ public class FullscreenActivity extends AppCompatActivity implements View.OnTouc
     mControlsView = binding.fullscreenContentControls;
     mContentView = binding.fullscreenContentControls;
 
-    webView = (WebView) findViewById(R.id.site);
+    webView = findViewById(R.id.site);
     webView.setOnTouchListener(this);
     client = new WebViewClient() {
+      public boolean timeout;
+
+      @Override
+      public void onPageStarted(WebView view, String url, Bitmap favicon) {
+
+        new Thread(new Runnable() {
+          @Override
+          public void run() {
+            timeout = true;
+
+            try {
+              Thread.sleep(300000);
+            } catch (InterruptedException e) {
+              e.printStackTrace();
+            }
+            if (timeout) {
+              view.stopLoading();
+              FullscreenActivity.instance.refreshUrl(FullscreenActivity.instance.mPrefs.getString("url", "http://10.4.1.9/televisori/@17"));
+              System.out.println("URL TIMEOUT - Auto Refresh");
+            } else {
+              System.out.println("OK");
+            }
+          }
+        }).start();
+      }
+
+      @Override
+      public void onPageFinished(WebView view, String url) {
+        timeout = false;
+      }
+
       @Override
       public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
-        Toast.makeText(FullscreenActivity.instance, "ERROR " + error.getErrorCode() + " - " + error.getDescription(), Toast.LENGTH_LONG).show();
-        FullscreenActivity.instance.reboot();
+        if (error.getDescription().equals("net::ERR_FAILED")) {
+          System.out.println("ERROR " + error.getErrorCode() + " - " + error.getDescription() + " URL: '" + request.getUrl() + "'");
+          Toast.makeText(FullscreenActivity.instance, "ERROR IGNORED! " + error.getErrorCode() + " - " + error.getDescription(), Toast.LENGTH_LONG).show();
+
+        } else {
+          System.out.println("ERROR " + error.getErrorCode() + " - " + error.getDescription() + " URL: '" + request.getUrl() + "'");
+          Toast.makeText(FullscreenActivity.instance, "ERROR " + error.getErrorCode() + " - " + error.getDescription() + " URL: '" + request.getUrl() + "'", Toast.LENGTH_LONG).show();
+          FullscreenActivity.instance.reboot();
+
+        }
       }
     };
     webView.setWebViewClient(client);
@@ -113,17 +166,20 @@ public class FullscreenActivity extends AppCompatActivity implements View.OnTouc
     webSettings.setJavaScriptEnabled(true);
     String url = mPrefs.getString("url", "http://10.4.1.9/televisori/@17");
     this.refreshUrl(url);
-    this.refresh = mPrefs.getInt("refresh", 60 * 60 * 12);
+    this.refresh = mPrefs.getInt("refresh", 43200); //60 * 60 * 12
     binding.settingsButton.setOnTouchListener(mDelayHideTouchListener);
   }
 
   @Override
   public void onDestroy() {
-    Toast.makeText(getApplicationContext(), "Morto!", Toast.LENGTH_LONG).show();
+    System.out.println("Destroy!");
+    Toast.makeText(getApplicationContext(), "Fase di chiusura!", Toast.LENGTH_LONG).show();
     super.onDestroy();
     this.stopTask();
     networkStateReceiver.removeListener(this);
     this.unregisterReceiver(networkStateReceiver);
+    if(this.restartActivity)
+      startActivity(new Intent(this.getBaseContext(), FullscreenActivity.class));
   }
 
   private final Runnable mHidePart2Runnable = new Runnable() {
@@ -234,9 +290,7 @@ public class FullscreenActivity extends AppCompatActivity implements View.OnTouc
   }
 
   public void doTimerTask() {
-
     Handler handler = new Handler(Looper.getMainLooper());
-
     mTimerTask = new TimerTask() {
       public void run() {
         handler.post(new Runnable() {
@@ -260,6 +314,9 @@ public class FullscreenActivity extends AppCompatActivity implements View.OnTouc
   public void refreshUrl(String URL) {
     webView.clearCache(true);
     webView.clearHistory();
+    webView.clearFormData();
+    webView.clearSslPreferences();
+
     SharedPreferences.Editor mEditor = mPrefs.edit();
     mEditor.putString("url", URL).commit();
     webView.loadUrl(URL);
@@ -282,4 +339,19 @@ public class FullscreenActivity extends AppCompatActivity implements View.OnTouc
     }
   }
 
+  @Override
+  public void onStop() {
+    System.out.println("Stopped!");
+    super.onStop();
+    Toast.makeText(this, "Stopped... "+this.restartActivity, Toast.LENGTH_LONG).show();
+    if(this.restartActivity)
+      startActivity(new Intent(this.getBaseContext(), FullscreenActivity.class));
+  }
+
+
+  public void closeApp(View view) {
+    this.restartActivity = false;
+    finish();
+    System.exit(0);
+  }
 }

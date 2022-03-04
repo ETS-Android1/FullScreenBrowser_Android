@@ -3,10 +3,7 @@ package com.xSavior_of_God.fullscreenbrowser;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Build;
 import android.widget.Toast;
-
-import java.io.IOException;
 
 public class BootUpReceiver extends BroadcastReceiver {
 
