@@ -339,14 +339,6 @@ public class FullscreenActivity extends AppCompatActivity implements View.OnTouc
     }
   }
 
-  @Override
-  public void onStop() {
-    System.out.println("Stopped!");
-    super.onStop();
-    Toast.makeText(this, "Stopped... "+this.restartActivity, Toast.LENGTH_LONG).show();
-    if(this.restartActivity)
-      startActivity(new Intent(this.getBaseContext(), FullscreenActivity.class));
-  }
 
 
   public void closeApp(View view) {
