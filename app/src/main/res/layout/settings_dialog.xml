@@ -101,6 +101,41 @@
       android:textColor="@color/white"
       android:textSize="18sp" />
 
+    <Button
+      android:id="@+id/button_close"
+      style="@style/Widget.AppCompat.Button"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_alignParentBottom="true"
+      android:layout_marginLeft="100dp"
+      android:layout_marginRight="100dp"
+      android:onClick="closeApp"
+      android:text="CLOSE THE APP"
+      android:textColor="@color/white"
+      android:textSize="18sp" />
+
+    <Button
+      android:id="@+id/button_toogle_reboot"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_alignParentTop="true"
+      android:layout_alignParentRight="true"
+      android:layout_marginRight="80dp"
+      android:textColor="@color/white"
+      android:text="Toggle Reboot"
+      android:textSize="8sp" />
+
+    <TextView
+      android:id="@+id/txt_toggle_reboot_status"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_alignParentTop="true"
+      android:layout_alignParentRight="true"
+      android:layout_marginTop="19dp"
+      android:layout_marginRight="20dp"
+      android:text="Status: OFF"
+      android:textSize="10sp" />
+
   </RelativeLayout>
 
 

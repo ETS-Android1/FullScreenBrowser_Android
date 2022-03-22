@@ -4,11 +4,14 @@ import android.annotation.SuppressLint;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.window.layout.WindowMetrics;
+import androidx.window.layout.WindowMetricsCalculator;
 
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
+import android.net.ConnectivityManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -46,11 +49,13 @@ public class FullscreenActivity extends AppCompatActivity implements View.OnTouc
   public static FullscreenActivity instance = null;
   private NetworkStateReceiver networkStateReceiver;
   public int refresh;
-  private SharedPreferences mPrefs = null;
+  public SharedPreferences mPrefs = null;
   private TimerTask mTimerTask;
   private Timer t = new Timer();
   public boolean viewOpen = false;
   public boolean restartActivity = true;
+  public boolean enableReboot = true;
+  public String txt_reboot_text = "Status: ...";
 
   /*
   Qui chiamo l'evento che innesca l'apertura delle impostazioni.
@@ -101,7 +106,7 @@ public class FullscreenActivity extends AppCompatActivity implements View.OnTouc
 
     networkStateReceiver = new NetworkStateReceiver();
     networkStateReceiver.addListener(this);
-    this.registerReceiver(networkStateReceiver, new IntentFilter(android.net.ConnectivityManager.CONNECTIVITY_ACTION));
+    this.registerReceiver(networkStateReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
 
     binding = ActivityFullscreenBinding.inflate(getLayoutInflater());
     setContentView(binding.getRoot());
@@ -112,6 +117,8 @@ public class FullscreenActivity extends AppCompatActivity implements View.OnTouc
 
     webView = findViewById(R.id.site);
     webView.setOnTouchListener(this);
+    computeWindowSizeClasses();
+
     client = new WebViewClient() {
       public boolean timeout;
 
@@ -165,9 +172,44 @@ public class FullscreenActivity extends AppCompatActivity implements View.OnTouc
     webSettings.setSafeBrowsingEnabled(false);
     webSettings.setJavaScriptEnabled(true);
     String url = mPrefs.getString("url", "http://10.4.1.9/televisori/@17");
+    this.enableReboot = mPrefs.getBoolean("toggleReboot", true);
+    this.txt_reboot_text = this.enableReboot ? "Status: ON" : "Status: OFF";
     this.refreshUrl(url);
     this.refresh = mPrefs.getInt("refresh", 43200); //60 * 60 * 12
     binding.settingsButton.setOnTouchListener(mDelayHideTouchListener);
+  }
+
+  public enum WindowSizeClass {COMPACT, MEDIUM, EXPANDED}
+
+  private void computeWindowSizeClasses() {
+    WindowMetrics metrics = WindowMetricsCalculator.getOrCreate()
+        .computeCurrentWindowMetrics(this);
+
+    float widthDp = metrics.getBounds().width() /
+        getResources().getDisplayMetrics().density;
+    WindowSizeClass widthWindowSizeClass;
+
+    if (widthDp < 600f) {
+      widthWindowSizeClass = WindowSizeClass.COMPACT;
+    } else if (widthDp < 840f) {
+      widthWindowSizeClass = WindowSizeClass.MEDIUM;
+    } else {
+      widthWindowSizeClass = WindowSizeClass.EXPANDED;
+    }
+
+    float heightDp = metrics.getBounds().height() /
+        getResources().getDisplayMetrics().density;
+    WindowSizeClass heightWindowSizeClass;
+
+    if (heightDp < 480f) {
+      heightWindowSizeClass = WindowSizeClass.COMPACT;
+    } else if (heightDp < 900f) {
+      heightWindowSizeClass = WindowSizeClass.MEDIUM;
+    } else {
+      heightWindowSizeClass = WindowSizeClass.EXPANDED;
+    }
+
+    // Use widthWindowSizeClass and heightWindowSizeClass
   }
 
   @Override
@@ -178,7 +220,7 @@ public class FullscreenActivity extends AppCompatActivity implements View.OnTouc
     this.stopTask();
     networkStateReceiver.removeListener(this);
     this.unregisterReceiver(networkStateReceiver);
-    if(this.restartActivity)
+    if (this.restartActivity)
       startActivity(new Intent(this.getBaseContext(), FullscreenActivity.class));
   }
 
@@ -331,19 +373,33 @@ public class FullscreenActivity extends AppCompatActivity implements View.OnTouc
   }
 
   public void reboot() {
-    try {
-      Toast.makeText(this, "Restarting...", Toast.LENGTH_LONG).show();
-      Runtime.getRuntime().exec("reboot");
-    } catch (Exception e) {
-      e.printStackTrace();
+    if (enableReboot)
+      try {
+        Toast.makeText(this, "Restarting...", Toast.LENGTH_LONG).show();
+        Runtime.getRuntime().exec("reboot");
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
+    else {
+      webView.stopLoading();
+      webView.clearCache(true);
+      webView.clearHistory();
+      webView.clearFormData();
+      webView.clearSslPreferences();
+
+      webView.loadUrl(mPrefs.getString("url", "http://10.4.1.9/televisori/@17"));
     }
   }
-
 
 
   public void closeApp(View view) {
     this.restartActivity = false;
     finish();
     System.exit(0);
+  }
+
+  public void setToggleReboot(boolean status) {
+    SharedPreferences.Editor mEditor = mPrefs.edit();
+    mEditor.putBoolean("toggleReboot", status).commit();
   }
 }

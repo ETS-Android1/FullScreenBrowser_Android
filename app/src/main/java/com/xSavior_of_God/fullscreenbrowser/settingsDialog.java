@@ -1,5 +1,6 @@
 package com.xSavior_of_God.fullscreenbrowser;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,7 +13,7 @@ import androidx.fragment.app.DialogFragment;
 
 public class settingsDialog extends DialogFragment {
   public EditText url, refresh;
-  private TextView mActionOk, mActionCancel;
+  private TextView mActionOk, mActionCancel, txtRebootStatus;
 
   @Override
   public void onDestroy() {
@@ -26,10 +27,26 @@ public class settingsDialog extends DialogFragment {
     View view = inflater.inflate(R.layout.settings_dialog, container, false);
     mActionCancel = view.findViewById(R.id.action_cancel);
     mActionOk = view.findViewById(R.id.action_ok);
+    View toggleReboot = view.findViewById(R.id.button_toogle_reboot);
+    txtRebootStatus = view.findViewById(R.id.txt_toggle_reboot_status);
     url = view.findViewById(R.id.inputUrl);
     refresh = view.findViewById(R.id.inputRefresh);
     url.setText(FullscreenActivity.instance.webView.getUrl()+"");
     refresh.setText(FullscreenActivity.instance.refresh+"");
+    txtRebootStatus.setText(FullscreenActivity.instance.txt_reboot_text+"");
+
+    toggleReboot.setOnClickListener(new View.OnClickListener() {
+
+      @Override
+      public void onClick(View view) {
+        FullscreenActivity.instance.enableReboot = !FullscreenActivity.instance.enableReboot;
+        FullscreenActivity.instance.txt_reboot_text = FullscreenActivity.instance.enableReboot? "Status: ON" : "Status: OFF";
+        txtRebootStatus.setText(FullscreenActivity.instance.txt_reboot_text);
+        SharedPreferences.Editor mEditor = FullscreenActivity.instance.mPrefs.edit();
+        mEditor.putBoolean("toggleReboot", FullscreenActivity.instance.enableReboot).commit();
+
+      }
+    });
 
     mActionCancel.setOnClickListener(new View.OnClickListener() {
       @Override
@@ -57,5 +74,6 @@ public class settingsDialog extends DialogFragment {
 
     return view;
   }
+
 
 }
